@@ -1,8 +1,18 @@
 const message = document.getElementById("message")
 const submitBtn = document.getElementById("submit-btn")
 const reviewList = document.getElementById("review-list")
+const avgerageRating = document.getElementById("average-rating")
 const stars = document.querySelectorAll("#rating svg")
+const totalRating = document.getElementById("total-rating")
+const percent5 = document.getElementById("percent5")
+const percent4 = document.getElementById("percent4")
+const percent3 = document.getElementById("percent3")
+const percent2 = document.getElementById("percent2")
+const percent1 = document.getElementById("percent1")
+
+
 let rating = 0
+let reviews = []
 
 console.log(stars);
 
@@ -54,8 +64,63 @@ function generateDiv(message, rating) {
             </div>`
 }
 
+function calculateAvg() {
+    const n = reviews.length;
+    let sum = 0;
+    for (let i = 0; i < n; ++i) {
+        sum += reviews[i].rating
+    }
+    return (sum/n).toFixed(2)
+}
+
+function calculatePercent(value) {
+    const n = reviews.length;
+    let cnt = 0;
+    for (let i = 0; i < n; ++i) {
+        if (reviews[i].rating == value) {
+            cnt += 1
+        }
+    }
+    return ((cnt/n)*100).toFixed(2)
+}
+
+function showOverview() {
+    const avg = calculateAvg()
+    avgerageRating.innerText = `${avg}`
+
+    totalRating.innerText = `${reviews.length} rating(s)`
+
+    p1 = calculatePercent(1)
+    p2 = calculatePercent(2)
+    p3 = calculatePercent(3)
+    p4 = calculatePercent(4)
+    p5 = calculatePercent(5)
+
+    percent1.style.width = `${p1}%`
+    percent2.style.width = `${p2}%`
+    percent3.style.width = `${p3}%`
+    percent4.style.width = `${p4}%`
+    percent5.style.width = `${p5}%`
+}
+
+function updateAverage() {
+    if (reviews.length > 0) {
+        showOverview()
+    }
+}
+
 function addReviews() {
     const msg = message.value
+
+    if(rating == 0) {
+        alert("Please provide rating")
+        return 
+    }
+
+    const review = {
+        message: msg,
+        rating: rating,
+    }
 
     const div = generateDiv(msg, rating)
     message.value = ''
@@ -63,6 +128,11 @@ function addReviews() {
     fillColors(0)
 
     reviewList.innerHTML = div + reviewList.innerHTML
+
+    reviews.unshift(review)
+    console.log(reviews);
+
+    updateAverage()
 }
 
 submitBtn.addEventListener("click", addReviews)
