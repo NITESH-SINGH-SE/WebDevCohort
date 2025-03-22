@@ -62,7 +62,7 @@ function addReviews() {
     // Reset rating
     fillColors(0)
 
-    reviewList.innerHTML += div
+    reviewList.innerHTML = div + reviewList.innerHTML
 }
 
 submitBtn.addEventListener("click", addReviews)
